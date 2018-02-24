@@ -19,18 +19,30 @@ typedef struct				s_thread_test
 
 pthread_mutex_t				printmutex = PTHREAD_MUTEX_INITIALIZER;
 
+#ifndef	NOFT
 static void					printinfo(t_thread_test *t, const char *buf)
 {
 	write(STDOUT_FILENO, "=", 1);
 	write(STDOUT_FILENO, buf, strlen(buf));
 	write(STDOUT_FILENO, " ", 1);
-	mem_printnum(t->num);
+	ft_printnum(t->num);
 	write(STDOUT_FILENO, " : ", 3);
 	write(STDOUT_FILENO, t->argv, strlen(t->argv));
 	write(STDOUT_FILENO, " : iteration ", 13);
-	mem_printnum(t->iter);
+	ft_printnum(t->iter);
 	write(STDOUT_FILENO, "\n", 1);
 }
+#else
+static void					printinfo(t_thread_test *t, const char *buf)
+{
+	write(STDOUT_FILENO, "=", 1);
+	write(STDOUT_FILENO, buf, strlen(buf));
+	write(STDOUT_FILENO, " : ", 3);
+	write(STDOUT_FILENO, t->argv, strlen(t->argv));
+	write(STDOUT_FILENO, " : iteration ", 13);
+	write(STDOUT_FILENO, "\n", 1);
+}
+#endif
 
 static void					*dothread(void *buffer)
 {
@@ -48,7 +60,9 @@ static void					*dothread(void *buffer)
 		s++;
 	}
 	printinfo(info, "Into thread (realloc string)");
+#ifndef	NOFT
 	show_alloc_dbg(MYDBG_FLAG, MYDBG_USAGE);
+#endif
 	pthread_mutex_unlock(&printmutex);
 	return (buffer);
 }
@@ -109,7 +123,9 @@ int							main(int argc, char **argv)
 		}
 		free(tinfo);
 		write(STDOUT_FILENO, "====================\n", 21);
+#ifndef	NOFT
 		show_alloc_dbg(MYDBG_FLAG, MYDBG_USAGE);
+#endif
 	}
 	return (0);
 }

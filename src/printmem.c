@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printmem.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/24 18:21:38 by fjacquem          #+#    #+#             */
+/*   Updated: 2018/02/24 18:24:29 by fjacquem         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ftmalloc.h>
 
 static void	putline(intptr_t value, int offset)
@@ -76,8 +88,8 @@ static void	write_content(void *addr, int size, int len)
 
 void		*ft_print_memory(const void *addr, size_t size)
 {
-	size_t	len;
-	int		i;
+	size_t		len;
+	int			i;
 	intptr_t	tmp;
 
 	len = 0;

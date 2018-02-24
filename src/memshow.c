@@ -1,30 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memshow.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/24 18:00:40 by fjacquem          #+#    #+#             */
+/*   Updated: 2018/02/24 20:13:42 by fjacquem         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ftmalloc.h>
-
-static void		ft_printdouble(double d, unsigned int precision)
-{
-	int			dec;
-	int			fl;
-	size_t		i;
-
-	i = 0;
-	dec = (int)d;
-	d -= dec;
-	d *= precision;
-	while (i < precision)
-	{
-		d *= 10;
-		i++;
-	}
-	fl = (int)d;
-	if (dec < 0)
-	{
-		dec = -dec;
-		write(STDOUT_FILENO, "-", 1);
-	}
-	mem_printnum(dec);
-	write(STDOUT_FILENO, ",", 1);
-	mem_printnum(fl);
-}
 
 static void		show_waste(t_mcfg *dat)
 {
@@ -34,10 +20,10 @@ static void		show_waste(t_mcfg *dat)
 	used = mem_get_page_usage(dat->areas);
 	unused = mem_get_unused(dat->areas);
 	write(STDOUT_FILENO, "used:\t", 7);
-	mem_printnum(used);
+	ft_printnum(used);
 	write(STDOUT_FILENO, " bytes\n", 7);
 	write(STDOUT_FILENO, "unused:\t", 8);
-	mem_printnum(unused);
+	ft_printnum(unused);
 	write(STDOUT_FILENO, " bytes\n", 7);
 	write(STDOUT_FILENO, "waste:\t", 7);
 	ft_printdouble(used == 0 ? 0 : (unused * 100) / used, 2);
@@ -51,69 +37,14 @@ static void		show_res(struct rusage u, int flag)
 	if (flag & FTMALLOC_SHOW_RES_HARDPAGE)
 	{
 		write(STDOUT_FILENO, "\thard page faults: ", 19);
-		mem_printnum(u.ru_majflt);
+		ft_printnum(u.ru_majflt);
 		write(STDOUT_FILENO, "\n", 1);
 	}
 	if (flag & FTMALLOC_SHOW_RES_SOFTPAGE)
 	{
 		write(STDOUT_FILENO, "\tsoft page faults: ", 19);
-		mem_printnum(u.ru_minflt);
+		ft_printnum(u.ru_minflt);
 		write(STDOUT_FILENO, "\n", 1);
-	}
-}
-
-static void		show_data(t_mcfg *dat, int flag)
-{
-	t_area			*a;
-	t_blk			*b;
-
-	a = dat->areas;
-	while (a)
-	{
-		if (flag & FTMALLOC_SHOW_AREA)
-		{
-			if (a->blktype == FTMALLOC_TINY)
-				write(STDOUT_FILENO, "TINY : ", 7);
-			else if (a->blktype == FTMALLOC_SMALL)
-				write(STDOUT_FILENO, "SMALL : ", 7);
-			else
-				write(STDOUT_FILENO, "BIG : ", 7);
-			mem_printaddr((intptr_t)a, -1, 1);
-			write(STDOUT_FILENO, " (", 2);
-//			mem_printnum(a->psize);
-			mem_printnum(a->nblk);
-			write(STDOUT_FILENO, " blocks)\t", 9);
-			mem_printnum(a->psize);
-			write(STDOUT_FILENO, " bytes\n", 7);
-		}
-		b = a->blocks;
-		while (b)
-		{
-			if (!b->freed)
-			{
-				if (flag & FTMALLOC_SHOW_BLOCK)
-				{
-					mem_printaddr((intptr_t)b, FTMALLOC_DBG_MAXDIGIT, 1);
-					write(STDOUT_FILENO, " - ", 3);
-					mem_printaddr(((intptr_t)b) + b->allocsize + sizeof(t_blk), FTMALLOC_DBG_MAXDIGIT, 1);
-					write(STDOUT_FILENO, ":\t", 2);
-					mem_printnum(b->allocsize);
-					write(STDOUT_FILENO, " bytes\n", 7);
-				}
-				if (flag & FTMALLOC_SHOW_CONTENT)
-					ft_print_memory(b->addr, b->allocsize);
-			}
-			else if (flag & FTMALLOC_SHOW_FREE)
-			{
-				mem_printaddr((intptr_t)b, FTMALLOC_DBG_MAXDIGIT, 1);
-				write(STDOUT_FILENO, " - ", 3);
-				mem_printaddr((intptr_t)b + b->allocsize + sizeof(t_blk), FTMALLOC_DBG_MAXDIGIT, 1);
-				write(STDOUT_FILENO, ":\t", 2);
-				write(STDOUT_FILENO, "Unused block\n", 13);
-			}
-			b = b->next;
-		}
-		a = a->next;
 	}
 }
 

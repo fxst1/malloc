@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memresetspace.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/24 13:58:12 by fjacquem          #+#    #+#             */
+/*   Updated: 2018/02/24 17:55:46 by fjacquem         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ftmalloc.h>
 
 static void			*reset_area(t_blk *b, void *addr, size_t size, int *find)
@@ -46,10 +58,11 @@ static void			*create_area(t_mcfg *dat, size_t size, void *expected_addr)
 		dat->areas = a;
 		return (a->blocks->addr);
 	}
-	return (NULL);	
+	return (NULL);
 }
 
-void				*mem_reset_space(t_mcfg *dat, void *addr, size_t size, size_t blktype)
+void				*mem_reset_space(t_mcfg *dat, void *addr, size_t size,
+						size_t blktype)
 {
 	t_area			*a;
 	void			*ret;

@@ -12,25 +12,31 @@ int					main(int argc, char **argv)
 
 	i = 0;
 	size = (argc > 1) ? (size_t)atoi(argv[1]) : ALLOC_S; 
+#ifndef	NOFT
 	write(STDOUT_FILENO, "malloc(", 7);
-	mem_printnum(size);
+	ft_printnum(size);
 	write(STDOUT_FILENO, ")", 1);
+#endif
 	addr = (unsigned char*)malloc(sizeof(unsigned char) * size);
+#ifndef	NOFT
 	write(STDOUT_FILENO, " = ", 3);
-	mem_printaddr((intptr_t)addr, -1, 1);
+	ft_printhex((intptr_t)addr, -1, 1);
 	write(STDOUT_FILENO, "\n", 1);
+#endif
 	if (addr)
 		while (i < size)
 		{
 			addr[i] = i;
 			i++;
 		}
+#ifndef	NOFT
 	if (size <= 256)
 		show_alloc_dbg(FTMALLOC_SHOW_ALL, RUSAGE_SELF);
 
 	write(STDOUT_FILENO, "realloc(", 8);
-	mem_printaddr((intptr_t)addr, -1, 1);
+	ft_printhex((intptr_t)addr, -1, 1);
 	write(STDOUT_FILENO, ")\n", 2);
+#endif
 	addr = realloc(addr, sizeof(unsigned char) * size);
 	tmp = addr;
 	while (*tmp)
@@ -38,15 +44,17 @@ int					main(int argc, char **argv)
 		*tmp = toupper(*tmp);
 		tmp++;
 	}
+#ifndef	NOFT
 	write(STDOUT_FILENO, " = ", 3);
-	mem_printaddr((intptr_t)addr, -1, 1);
+	ft_printhex((intptr_t)addr, -1, 1);
 	write(STDOUT_FILENO, "\n", 1);
 
 	write(STDOUT_FILENO, "free(", 5);
-	mem_printaddr((intptr_t)addr, -1, 1);
+	ft_printhex((intptr_t)addr, -1, 1);
 	write(STDOUT_FILENO, ")\n", 2);
 	free(addr);
 	if (size <= 256)
 		show_alloc_dbg(FTMALLOC_SHOW_ALL, RUSAGE_SELF);
+#endif
 	return (0);
 }

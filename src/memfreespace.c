@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memfreespace.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/24 16:26:24 by fjacquem          #+#    #+#             */
+/*   Updated: 2018/02/24 18:12:36 by fjacquem         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ftmalloc.h>
 
 static void			*create_area(t_mcfg *dat, size_t size, void *expected_addr)
@@ -12,7 +24,6 @@ static void			*create_area(t_mcfg *dat, size_t size, void *expected_addr)
 	}
 	return (NULL);
 }
-
 
 static void			*look_for_space(t_blk *b, size_t size)
 {
@@ -29,7 +40,8 @@ static void			*look_for_space(t_blk *b, size_t size)
 	return (NULL);
 }
 
-void				*mem_get_free_space(t_mcfg *dat, size_t size, size_t blktype)
+void				*mem_get_free_space(t_mcfg *dat, size_t size,
+						size_t blktype)
 {
 	t_area			*a;
 	void			*expected_addr;
@@ -49,8 +61,5 @@ void				*mem_get_free_space(t_mcfg *dat, size_t size, size_t blktype)
 			expected_addr = (void*)((intptr_t)a) + a->psize;
 		a = a->next;
 	}
-	write(1, "===========", 8);
-	mem_printaddr((intptr_t)expected_addr, -1, 1);
-	write(1, "\n", 1);
 	return (create_area(dat, size, expected_addr));
 }

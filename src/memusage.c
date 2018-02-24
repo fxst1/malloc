@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memusage.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/24 13:58:12 by fjacquem          #+#    #+#             */
+/*   Updated: 2018/02/24 18:21:13 by fjacquem         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ftmalloc.h>
 
 size_t			mem_get_unused(t_area *a)
@@ -59,7 +71,6 @@ size_t			mem_get_page_usage(t_area *a)
 	}
 	return (usage);
 }
-
 
 size_t			mem_get_block_usage(t_area *a)
 {

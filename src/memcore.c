@@ -1,11 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memcore.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/24 14:58:09 by fjacquem          #+#    #+#             */
+/*   Updated: 2018/02/24 16:23:47 by fjacquem         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ftmalloc.h>
+
+#ifdef NO_MT_SAFE
 
 static t_mcfg					init_mcfg(void)
 {
-# ifdef NO_MT_SAFE
-# else
-	static pthread_mutex_t		lock = PTHREAD_MUTEX_INITIALIZER;
-# endif
 	t_mcfg						dat;
 
 	dat.psize = (size_t)getpagesize();
@@ -14,16 +24,35 @@ static t_mcfg					init_mcfg(void)
 	dat.malloc_hook = NULL;
 	dat.realloc_hook = NULL;
 	dat.free_hook = NULL;
-# ifdef NO_MT_SAFE
-# else
-	dat.lock = lock;
-# endif
 	dat.opts.prot = PROT_READ | PROT_WRITE | PROT_EXEC;
 	dat.opts.flags = MAP_PRIVATE | MAP_ANONYMOUS;
 	dat.opts.fd = -1;
 	dat.opts.offset = 0;
 	return (dat);
 }
+
+#else
+
+static t_mcfg					init_mcfg(void)
+{
+	static pthread_mutex_t		lock = PTHREAD_MUTEX_INITIALIZER;
+	t_mcfg						dat;
+
+	dat.psize = (size_t)getpagesize();
+	dat.areas = NULL;
+	dat.arenamax = 0;
+	dat.malloc_hook = NULL;
+	dat.realloc_hook = NULL;
+	dat.free_hook = NULL;
+	dat.lock = lock;
+	dat.opts.prot = PROT_READ | PROT_WRITE | PROT_EXEC;
+	dat.opts.flags = MAP_PRIVATE | MAP_ANONYMOUS;
+	dat.opts.fd = -1;
+	dat.opts.offset = 0;
+	return (dat);
+}
+
+#endif
 
 t_mcfg							*mem_get_data(void)
 {
@@ -35,6 +64,5 @@ t_mcfg							*mem_get_data(void)
 		cfg = init_mcfg();
 		exist = 1;
 	}
-
 	return (&cfg);
 }

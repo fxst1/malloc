@@ -51,9 +51,10 @@ int					main(int argc, char **argv)
 		//printf("end\n");
 	}	
 
+#ifndef NOFT
 	//if (size <= 256)
 		show_alloc_dbg(FTMALLOC_SHOW_AREA | FTMALLOC_SHOW_BLOCK | FTMALLOC_SHOW_WASTE | FTMALLOC_SHOW_FREE, RUSAGE_SELF);
-
+#endif
 	i = 0;
 	while (i < MAXALLOC)
 	{
@@ -61,7 +62,9 @@ int					main(int argc, char **argv)
 		i++;
 	}
 	free(tests);
+#ifndef NOFT
 	show_alloc_dbg(FTMALLOC_SHOW_ALL, RUSAGE_SELF);
+#endif
 
 	return (0);
 }
