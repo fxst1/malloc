@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 18:29:19 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/02/27 18:56:25 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,9 @@ size_t					mem_get_blksize(size_t allocsize);
 size_t					mem_get_nblk(size_t blksize, size_t psize);
 size_t					mem_correct_factor(size_t psize, size_t allocsize);
 
+void					show_alloc(void);
 void					show_alloc_ex(void);
+void					show_alloc_mem(void);
 void					show_alloc_mem_ex(void);
 void					show_alloc_dbg(unsigned int flag, int who);
 void					show_data(t_mcfg *dat, int flag);

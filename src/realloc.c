@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:49:34 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 16:24:09 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/02/27 18:55:20 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void				*realloc(void *addr, size_t size)
 	void			*ret;
 	t_mcfg			*dat;
 
-	if (!size || size > SIZE_T_MAX - sizeof(t_area) - sizeof(t_blk))
+	/*if (!size || size > SIZE_T_MAX - sizeof(t_area) - sizeof(t_blk))
 		return (NULL);
-	else if (!addr)
+	else*/ if (!addr)
 		return (malloc(size));
 	dat = mem_get_data();
 	mem_lock(dat);

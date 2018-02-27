@@ -6,18 +6,20 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:51:24 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 16:24:20 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/02/27 19:04:22 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
+#include <unistd.h>
 
 void				*malloc(size_t size)
 {
 	void			*ret;
 	t_mcfg			*dat;
 
-	if (!size || size > SIZE_T_MAX - sizeof(t_area) - sizeof(t_blk))
+	write(1, "Malloc\n", 7);
+	if (!size /*|| size > SIZE_T_MAX - sizeof(t_area) - sizeof(t_blk)*/)
 		return (NULL);
 	dat = mem_get_data();
 	mem_lock(dat);
@@ -25,11 +27,13 @@ void				*malloc(size_t size)
 	if (dat->malloc_hook)
 		dat->malloc_hook(size, (const void*(*))malloc);
 	mem_unlock(dat);
+	//show_alloc();
 	return (ret);
 }
 
 void				*calloc(size_t nmenb, size_t size)
 {
+	write(1, "Calloc\n", 7);
 	return (malloc(nmenb * size));
 }
 

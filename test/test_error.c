@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 13:58:12 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 20:15:52 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/02/27 18:49:15 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int					main(void)
 	malloc_test(max);
 	malloc_test((size_t)0);
 	malloc_test((size_t)UINT_MAX);
-	malloc_test((size_t)INT_MAX);
+	malloc_test((size_t)INT_MAX * 42);
 	printf("\nREALLOC :\n");
 	realloc_test(NULL, max);
 	realloc_test(NULL, (size_t)0);

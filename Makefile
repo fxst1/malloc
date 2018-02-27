@@ -38,7 +38,7 @@ bin:
 	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_malloc.c -o test_malloc -L . $(NAME)
 	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_free.c -o test_free -L . $(NAME)
 	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_realloc.c -o test_realloc -L . $(NAME)
-	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_thread.c -o test_thread -L . $(NAME) -lpthread
+	#$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_thread.c -o test_thread -L . $(NAME) -lpthread
 	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_error.c -o test_error -L . $(NAME)
 	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_many.c -o test_many -L . $(NAME)
 
