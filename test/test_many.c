@@ -1,10 +1,12 @@
+#include <signal.h>
+#include <stdio.h>
+#include <fcntl.h>
 #include <ftmalloc.h>
-//#include <stdio.h>
 #define ALLOC_S 1
 //#define MAXALLOC 16777215
 #define MAXALLOC 4
 
-static void			*alloc(size_t len)
+void			*alloc(size_t len)
 {
 	void			*addr;
 	size_t			i;
@@ -12,21 +14,39 @@ static void			*alloc(size_t len)
 	i = 0;
 	addr = malloc(len);
 	if (addr)
+	{
 		while (i < len)
 		{
 			((unsigned char*)addr)[i] = i;
 			i++;
 		}
+	}
 	return (addr);
+}
+
+void 				handler(int s)
+{
+	int	fd = open("segfault", O_WRONLY | O_CREAT, 0644);
+	int nfd = dup2(1, fd);
+	show_alloc_mem();
+	close(fd);
+	close(nfd);
+	(void)s;
+	(void)nfd;
 }
 
 int					main(int argc, char **argv)
 {
 	size_t			size;
+	size_t			max;
 	size_t			i;
 	void			**tests;
 
-	tests = (void**)malloc(sizeof(void*) * MAXALLOC);
+	signal(SIGSEGV, handler);
+
+	size = (argc > 1) ? (size_t)atoi(argv[1]) : ALLOC_S;
+	max = (argc > 2) ? (size_t)atoi(argv[2]) : MAXALLOC;
+	tests = (void**)malloc(sizeof(void*) * max);
 	if (!tests)
 	{
 		//printf("Cannot allocate buffer\n");
@@ -34,37 +54,24 @@ int					main(int argc, char **argv)
 	}
 
 	i = 0;
-	size = (argc > 1) ? (size_t)atoi(argv[1]) : ALLOC_S; 
-	while (i < MAXALLOC - 2)
+	while (i < max)
 	{
-		//printf("alloc %zu\n", i);
 		tests[i] = alloc(size);
 		i++;
-		//printf("end\n");
 	}
 
-	while (i < MAXALLOC)
-	{
-		//printf("alloc %zu\n", i);
-		tests[i] = malloc(4096);
-		i++;
-		//printf("end\n");
-	}	
-
-#ifndef NOFT
-	//if (size <= 256)
-		show_alloc_dbg(FTMALLOC_SHOW_AREA | FTMALLOC_SHOW_BLOCK | FTMALLOC_SHOW_WASTE | FTMALLOC_SHOW_FREE, RUSAGE_SELF);
-#endif
+	show_alloc_mem();
+//	if (size <= 256)
+//		show_alloc_dbg(FTMALLOC_SHOW_AREA | FTMALLOC_SHOW_BLOCK | FTMALLOC_SHOW_WASTE | FTMALLOC_SHOW_FREE, RUSAGE_SELF);
 	i = 0;
-	while (i < MAXALLOC)
+	while (i < max)
 	{
 		free(tests[i]);
 		i++;
 	}
 	free(tests);
-#ifndef NOFT
-	show_alloc_dbg(FTMALLOC_SHOW_ALL, RUSAGE_SELF);
-#endif
-
+	ft_printstr("=================\n");
+	show_alloc_mem();
+//	show_alloc_dbg(FTMALLOC_SHOW_ALL, RUSAGE_SELF);
 	return (0);
 }

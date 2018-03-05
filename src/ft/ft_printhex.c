@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 18:01:04 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 18:19:45 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/03/05 11:05:28 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ static void		ft_printhex2(intptr_t v, size_t *n)
 	else
 	{
 		(*n)++;
-		v = (v <= 9 ? v + '0' : v - 10 + 'A');
-		write(1, &v, 1);
+		v = (v <= 9 ? v + '0' : v - 10 + 'a');
+		write(STDOUT_FILENO, &v, 1);
 	}
 }
 
-void			ft_printhex(intptr_t v, int max, int show_x)
+static void		ft_printhex1(intptr_t v, int max, int show_x)
 {
 	size_t	n;
 
@@ -35,18 +35,31 @@ void			ft_printhex(intptr_t v, int max, int show_x)
 	if (!v)
 	{
 		if (show_x)
-			write(1, "0x0", 3);
+			write(STDOUT_FILENO, "0x0", 3);
+		else
+			write(STDOUT_FILENO, "0", 1);
 	}
 	else
 	{
 		if (show_x)
-			write(1, "0x", 2);
+			write(STDOUT_FILENO, "0x", 2);
 		ft_printhex2((unsigned long)v, &n);
 		if (max > 0)
 			while (n < (size_t)max)
 			{
-				write(1, "0", 1);
+				write(STDOUT_FILENO, "0", 1);
 				n++;
 			}
 	}
+}
+
+
+void			ft_printaddr(intptr_t v)
+{
+	ft_printhex1(v, FTMALLOC_DBG_MAXDIGIT, 1);
+}
+
+void			ft_printhex(intptr_t v)
+{
+	ft_printhex1(v, -1, 0);
 }

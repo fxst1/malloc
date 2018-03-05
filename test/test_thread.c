@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/27 16:57:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/27 18:20:25 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/03/04 19:51:32 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ static void				*dothread(void *buffer)
 		s++;
 	}
 	printinfo(info, "Into thread (realloc string)");
-	show_alloc_dbg(MYDBG_FLAG, MYDBG_USAGE);
-	pthread_mutex_unlock(&g_g_printmutex);
+	show_alloc_mem();
+	pthread_mutex_unlock(&g_printmutex);
 	return (buffer);
 }
 
@@ -70,7 +70,7 @@ static t_thread_test	*allocthread(size_t num, char *argv)
 	return (t);
 }
 
-static t_thread_test	**main_process(char **argv)
+static t_thread_test	**main_process(int argc, char **argv)
 {
 	size_t			i;
 	t_thread_test	**tinfo;
@@ -100,7 +100,7 @@ int						main(int argc, char **argv)
 
 	if (argc > 1)
 	{
-		tinfo = main_process(argv);
+		tinfo = main_process(argc, argv);
 		i = 0;
 		while (tinfo[i])
 		{
@@ -110,7 +110,7 @@ int						main(int argc, char **argv)
 		}
 		free(tinfo);
 		write(STDOUT_FILENO, "====================\n", 21);
-		show_alloc_dbg(MYDBG_FLAG, MYDBG_USAGE);
+		show_alloc_mem();
 	}
 	return (0);
 }

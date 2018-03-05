@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memclear.c                                         :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 13:58:12 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 16:24:23 by fjacquem         ###   ########.fr       */
+/*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/05 11:35:47 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-void					mem_clear_space(t_mcfg *dat, void *addr)
+static void		get_area_and_free_block(t_area *a, intptr_t addr)
 {
-	t_area			*a;
-	t_blk			*b;
+	t_blk		*b;
 
-	a = dat->areas;
 	while (a)
 	{
 		b = a->blocks;
@@ -25,11 +23,27 @@ void					mem_clear_space(t_mcfg *dat, void *addr)
 		{
 			if (b->addr == addr)
 			{
-				b->freed = 1;
 				b->allocsize = 0;
+				b->freed = 1;
+				return;
 			}
 			b = b->next;
 		}
 		a = a->next;
 	}
+}
+
+void 				free(void *addr)
+{
+	t_mcfg		*cfg;
+
+	cfg = mem_get_data();
+	mem_lock(cfg);
+	if (!mem_is_overlap(cfg))
+	{
+		get_area_and_free_block(cfg->areas, (intptr_t)addr);
+		mem_delete(cfg, &cfg->areas);
+	}
+	mem_unlock(cfg);
+	show_alloc_mem();
 }

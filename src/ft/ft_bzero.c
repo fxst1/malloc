@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printnum.c                                      :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 18:05:02 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/04 16:35:51 by fxst1            ###   ########.fr       */
+/*   Created: 2018/03/04 17:44:18 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/04 17:45:54 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ftmalloc.h>
+#include <stdlib.h>
 
-void		ft_printnum(intptr_t v)
+void 		ft_bzero(const void *ptr, size_t size)
 {
-	if (v >= 10)
-	{
-		ft_printnum(v / 10);
-		ft_printnum(v % 10);
-	}
-	else
-	{
-		v += '0';
-		write(STDOUT_FILENO, &v, 1);
-	}
+	unsigned char	*buf;
+	size_t			i;
+
+	i = 0;
+	buf = (unsigned char*)ptr;
+	while (i < size)
+		buf[i++] = 1;
 }

@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/27 18:56:25 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/03/05 11:57:41 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,16 @@
 # include <sys/mman.h>
 # include <sys/time.h>
 # include <sys/resource.h>
+# include <errno.h>
 # include <stddef.h>
-# ifdef NO_MT_SAFE
-# else
-#  include <pthread.h>
-# endif
+# include <pthread.h>
 # include <unistd.h>
 # define SIZE_T_MAX					(size_t)-1
 # define FTMALLOC_DBG_MAXDIGIT		12
-# define FTMALLOC_TINY				128
-# define FTMALLOC_SMALL				1024
-# define FTMALLOC_BIG				8192
-# define FTMALLOC_FACTOR			1
+# define FTMALLOC_TINY				1024
+# define FTMALLOC_SMALL				4096
+# define FTMALLOC_BIG				16384
+# define FTMALLOC_NBLOCKS			100
 # define FTMALLOC_FILEID			"FT"
 # define FTMALLOC_SHOW_WASTE		0x1
 # define FTMALLOC_SHOW_AREA			0x2
@@ -42,14 +40,20 @@
 # define FTMALLOC_SHOW_RES_SELF		RUSAGE_SELF
 # define FTMALLOC_SHOW_RES_CHILDREN	RUSAGE_CHILDREN
 # define FTMALLOC_SHOW_RES_THREAD	RUSAGE_THREAD
-
 # ifndef M_ARENA_MAX
 #  define M_ARENA_MAX 1
 # endif
 
+typedef void			*(*memhook_t)(size_t, const void*(*));
+
+extern					int			errno;
+extern 					memhook_t g_malloc_hook;
+extern 					memhook_t g_realloc_hook;
+extern 					memhook_t g_free_hook;
+
 typedef struct			s_blk
 {
-	void				*addr;
+	intptr_t			addr;
 	size_t				allocsize;
 	int					freed;
 	struct s_blk		*next;
@@ -57,10 +61,10 @@ typedef struct			s_blk
 
 typedef struct			s_area
 {
-	size_t				blktype;
-	size_t				nblk;
-	size_t				psize;
+	size_t				total_size;
+	size_t				blksize;
 	t_blk				*blocks;
+	struct s_area		*prev;
 	struct s_area		*next;
 }						t_area;
 
@@ -74,76 +78,62 @@ typedef struct			s_alloc_opts
 
 typedef struct			s_mcfg
 {
+	intptr_t			expected;
 	t_alloc_opts		opts;
 	t_area				*areas;
-	size_t				arenamax;
 	size_t				psize;
-	void				*(*malloc_hook)(size_t, const void*(*));
-	void				*(*realloc_hook)(size_t, const void*(*));
-	void				*(*free_hook)(size_t, const void*(*));
-# ifdef NO_MT_SAFE
-# else
-
 	pthread_mutex_t		lock;
-
-# endif
-
 }						t_mcfg;
 
+/*
+**	External
+*/
 void					exit(int status);
 int						atoi(const char *s);
+void					ft_printdouble(double d, unsigned int precision);
+void					ft_printhex(intptr_t v);
+void					ft_printaddr(intptr_t v);
+void					ft_printnum(intptr_t v);
+void 					ft_printstr(const char *s);
+void 					ft_bzero(const void *ptr, size_t size);
+void 					ft_printshl(const char *s, intptr_t hex);
 
-void					mem_clear_space(t_mcfg *dat, void *addr);
-void					mem_areas_clear(t_area **a);
-
+/*
+**	Memory structure
+*/
+t_mcfg 					*mem_get_data(void);
 void					mem_lock(t_mcfg *dat);
 void					mem_unlock(t_mcfg *dat);
 
-void					*mem_get_free_space(t_mcfg *dat, size_t size,
-							size_t blktype);
-void					*mem_reset_space(t_mcfg *dat, void *addr, size_t size,
-							size_t blktype);
+/*
+**	Messurement
+*/
+size_t					mem_get_typesize(size_t allocsize);
+int						mem_size_overflow(size_t psize, size_t typesize);
+size_t					mem_get_total(size_t value, size_t add);
 
-void					mem_numofdigit(intptr_t v, unsigned int base, size_t *n)
-								;
-void					ft_printdouble(double d, unsigned int precision);
-void					ft_printhex(intptr_t v, int max, int show_x);
-void					ft_printnum(intptr_t v);
+/*
+**	Management
+*/
+intptr_t				mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize);
+void					mem_delete(t_mcfg *cfg, t_area **root);
+int 					mem_is_overlap(t_mcfg *cfg);
 
-size_t					mem_get_pagesize(size_t blksize);
-size_t					mem_get_blksize(size_t allocsize);
-size_t					mem_get_nblk(size_t blksize, size_t psize);
-size_t					mem_correct_factor(size_t psize, size_t allocsize);
+/*
+**	Search
+*/
+intptr_t 				mem_search_space(t_mcfg *dat, size_t allocsize, size_t typesize);
 
-void					show_alloc(void);
-void					show_alloc_ex(void);
-void					show_alloc_mem(void);
-void					show_alloc_mem_ex(void);
-void					show_alloc_dbg(unsigned int flag, int who);
-void					show_data(t_mcfg *dat, int flag);
+/*
+**	Show
+*/
+void 					show_alloc_mem(void);
 
-t_mcfg					*mem_get_data(void);
-
-void					mem_area_set(t_area *a, size_t allocsize,
-							size_t blksize, size_t mapsize);
-t_area					*mem_area_init(t_mcfg *dat, size_t psize,
-							size_t allocsize, void *expected_addr);
-int						mem_area_reset(t_area *a, size_t allocsize,
-							size_t blksize);
-
-double					mem_get_waste(void);
-size_t					mem_get_unused(t_area *a);
-size_t					mem_get_usage(t_area *a);
-size_t					mem_get_page_usage(t_area *a);
-size_t					mem_get_block_usage(t_area *a);
-
+/*
+**	Main functions
+*/
 void					*malloc(size_t size);
-void					*calloc(size_t nmenb, size_t size);
 void					*realloc(void *addr, size_t size);
-void					*reallocarray(void *ptr, size_t nmenb, size_t size);
 void					free(void *addr);
-int						mallopt(int param, int value);
-void					*malloc_spec(size_t size, t_alloc_opts *opts);
-void					*ft_print_memory(const void *addr, size_t size);
 
 #endif

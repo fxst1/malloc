@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 13:58:12 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/27 18:49:15 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/03/05 08:04:33 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,12 @@ static void			malloc_test(size_t len)
 
 	printf("malloc(%zu)\n", len);
 	ret = malloc(len);
-	printf("\t=> %p\n", ret);
+	if (ret)
+		printf("\t=> %p\n", ret);
+	else
+		printf("\t=> (nil)\n");
+//	show_alloc_mem();
+	printf("\n");
 	free(ret);
 }
 
@@ -49,8 +54,10 @@ int					main(void)
 
 	max = (size_t)-1;
 	printf("MALLOC :\n");
+	malloc_test(1);
+	malloc_test(42);
+	malloc_test(1024);
 	malloc_test(max);
-	malloc_test((size_t)0);
 	malloc_test((size_t)UINT_MAX);
 	malloc_test((size_t)INT_MAX * 42);
 	printf("\nREALLOC :\n");

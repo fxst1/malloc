@@ -3,36 +3,65 @@
 /*                                                        :::      ::::::::   */
 /*   realloc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 14:49:34 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/27 18:55:20 by fjacquem         ###   ########.fr       */
+/*   Created: 2018/03/04 13:10:05 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/05 11:36:06 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-void				*realloc(void *addr, size_t size)
+static intptr_t	can_realloc_same(t_area *a, intptr_t addr, size_t allocsize, size_t typesize)
 {
-	void			*ret;
-	t_mcfg			*dat;
+	t_blk		*b;
 
-	/*if (!size || size > SIZE_T_MAX - sizeof(t_area) - sizeof(t_blk))
-		return (NULL);
-	else*/ if (!addr)
-		return (malloc(size));
-	dat = mem_get_data();
-	mem_lock(dat);
-	mem_areas_clear(&dat->areas);
-	ret = mem_reset_space(dat, addr, size, mem_get_blksize(size));
-	if (dat->realloc_hook)
-		dat->realloc_hook(size, (const void*(*))realloc);
-	mem_unlock(dat);
-	return (ret);
-	(void)size;
+	while (a)
+	{
+		b = a->blocks;
+		while (b)
+		{
+			if (b->addr == addr)
+			{
+				if (typesize == a->blksize)
+				{
+					b->allocsize = allocsize;
+					return (b->addr);
+				}
+				b->allocsize = 0;
+				b->freed = 1;
+				return (0x0);
+			}
+			b = b->next;
+		}
+		a = a->next;
+	}
+	return (0x0);
 }
 
-void				*reallocarray(void *ptr, size_t nmenb, size_t size)
+void 			*realloc(void *addr, size_t size)
 {
-	return (realloc(ptr, nmenb * size));
+	t_mcfg		*cfg;
+	intptr_t	ptr;
+	size_t		typesize;
+
+	addr = 0x0;
+	cfg = mem_get_data();
+	mem_lock(cfg);
+	typesize = mem_get_typesize(size);
+	ptr = can_realloc_same(cfg->areas, (intptr_t)addr, size, typesize);
+	if (ptr)
+	{
+		mem_delete(cfg, &cfg->areas);
+		mem_unlock(cfg);
+		return (addr);
+	}
+	if (size > 0 && !mem_size_overflow(cfg->psize, typesize) && !mem_is_overlap(cfg))
+	{
+		ptr = mem_search_space(cfg, size, typesize);
+		if (!ptr)
+			ptr = mem_new(cfg, size, typesize);
+	}
+	mem_unlock(cfg);
+	return ((void*)addr);
 }

@@ -3,65 +3,77 @@
 /*                                                        :::      ::::::::   */
 /*   show_alloc_mem.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 16:18:22 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 18:13:19 by fjacquem         ###   ########.fr       */
+/*   Created: 2018/03/04 14:53:11 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/05 10:08:42 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-static void	print_info_header(t_area *a)
+static void		area_header(t_area *a)
 {
-	if (a->blktype == FTMALLOC_TINY)
+	ft_printaddr((intptr_t)a);
+	write(STDOUT_FILENO, "\n", 1);
+	if (a->blksize <= FTMALLOC_TINY)
 		write(STDOUT_FILENO, "TINY : ", 7);
-	else if (a->blktype == FTMALLOC_SMALL)
-		write(STDOUT_FILENO, "SMALL : ", 7);
+	else if (a->blksize <= FTMALLOC_SMALL)
+		write(STDOUT_FILENO, "SMALL : ", 8);
 	else
-		write(STDOUT_FILENO, "BIG : ", 7);
-	ft_printhex(a->psize, -1, 1);
-	write(STDOUT_FILENO, " (", 2);
-	ft_printnum(a->nblk);
-	write(STDOUT_FILENO, ")", 1);
+		write(STDOUT_FILENO, "BIG : ", 6);
+	ft_printaddr((intptr_t)a);
 	write(STDOUT_FILENO, "\n", 1);
 }
 
-static void	print_info_mem(t_area *a)
+static void		block_view(t_blk *b)
 {
-	t_blk	*b;
-
-	b = a->blocks;
-	print_info_header(a);
 	while (b)
 	{
-		ft_printhex((unsigned long)b->addr, FTMALLOC_DBG_MAXDIGIT, 1);
-		write(STDOUT_FILENO, " - ", 3);
-		ft_printhex((unsigned long)b->addr + b->allocsize,
-			FTMALLOC_DBG_MAXDIGIT, 1);
-		write(STDOUT_FILENO, " : ", 3);
-		if (!b->freed)
+		if (b->allocsize > 0)
 		{
+			ft_printaddr(b->addr);
+			write(STDOUT_FILENO, " - ", 3);
+			ft_printaddr(b->addr + b->allocsize);
+			write(STDOUT_FILENO, " : ", 3);
 			ft_printnum(b->allocsize);
-			write(STDOUT_FILENO, " bytes\n", 7);
-			ft_print_memory(b->addr, b->allocsize);
+			if (b->allocsize == 1)
+				write(STDOUT_FILENO, " octet\n", 7);
+			else if (b->allocsize > 0)
+				write(STDOUT_FILENO, " octets\n", 8);
+			else
+				write(STDOUT_FILENO, "\n", 1);
 		}
-		else
-			write(STDOUT_FILENO, "Unused block\n", 13);
+		//else
+		//	write(STDOUT_FILENO, " empty\n", 7);
 		b = b->next;
 	}
 }
 
-void		show_alloc_mem_ex(void)
+void 			show_alloc_mem(void)
 {
-	t_mcfg	*dat;
-	t_area	*a;
+	t_mcfg		*cfg;
+	t_area		*a;
+	size_t		total;
 
-	dat = mem_get_data();
-	a = dat->areas;
-	while (a)
+	cfg = mem_get_data();
+	mem_lock(cfg);
+	if (mem_is_overlap(cfg))
 	{
-		print_info_mem(a);
-		a = a->next;
+		total = mem_get_total(0, 0);
+		a = cfg->areas;
+		while (a)
+		{
+			area_header(a);
+			block_view(a->blocks);
+			a = a->next;
+		}
+		write(STDOUT_FILENO, "Total : ", 8);
+		ft_printnum(total);
+		if (total <= 1)
+			write(STDOUT_FILENO, " octet\n", 7);
+		else
+			write(STDOUT_FILENO, " octets\n", 8);		
 	}
+	mem_unlock(cfg);
 }

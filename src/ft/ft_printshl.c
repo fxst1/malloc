@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printnum.c                                      :+:      :+:    :+:   */
+/*   ft_printshl.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 18:05:02 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/04 16:35:51 by fxst1            ###   ########.fr       */
+/*   Created: 2018/03/05 10:54:07 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/05 11:04:34 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-void		ft_printnum(intptr_t v)
+void 		ft_printshl(const char *s, intptr_t hex)
 {
-	if (v >= 10)
-	{
-		ft_printnum(v / 10);
-		ft_printnum(v % 10);
-	}
-	else
-	{
-		v += '0';
-		write(STDOUT_FILENO, &v, 1);
-	}
+	ft_printstr(s);
+	ft_printstr("0x");
+	ft_printhex(hex);
+	write(STDOUT_FILENO, "\n", 1);
 }

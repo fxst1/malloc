@@ -1,27 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printnum.c                                      :+:      :+:    :+:   */
+/*   mem_get_typesize.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 18:05:02 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/04 16:35:51 by fxst1            ###   ########.fr       */
+/*   Created: 2018/03/04 11:26:45 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/04 11:28:30 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-void		ft_printnum(intptr_t v)
+size_t					mem_get_typesize(size_t allocsize)
 {
-	if (v >= 10)
-	{
-		ft_printnum(v / 10);
-		ft_printnum(v % 10);
-	}
-	else
-	{
-		v += '0';
-		write(STDOUT_FILENO, &v, 1);
-	}
+	if (allocsize <= FTMALLOC_TINY)
+		return (FTMALLOC_TINY);
+	else if (allocsize <= FTMALLOC_SMALL)
+		return (FTMALLOC_SMALL);
+	return (allocsize);
 }

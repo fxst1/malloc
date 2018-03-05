@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printnum.c                                      :+:      :+:    :+:   */
+/*   mem_lock.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 18:05:02 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/04 16:35:51 by fxst1            ###   ########.fr       */
+/*   Created: 2018/03/04 11:18:28 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/04 11:24:01 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-void		ft_printnum(intptr_t v)
+#ifndef NO_MT_SAFE
+
+void 		mem_lock(t_mcfg *dat)
 {
-	if (v >= 10)
-	{
-		ft_printnum(v / 10);
-		ft_printnum(v % 10);
-	}
-	else
-	{
-		v += '0';
-		write(STDOUT_FILENO, &v, 1);
-	}
+	pthread_mutex_lock(&dat->lock);
 }
+
+#else
+
+void 		mem_lock(t_mcfg *dat)
+{
+	(void)dat;
+}
+
+#endif

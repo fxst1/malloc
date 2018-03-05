@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printnum.c                                      :+:      :+:    :+:   */
+/*   ft_printstr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 18:05:02 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/04 16:35:51 by fxst1            ###   ########.fr       */
+/*   Created: 2018/03/04 17:03:06 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/04 17:04:38 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ftmalloc.h>
+#include <unistd.h>
 
-void		ft_printnum(intptr_t v)
+static size_t	ft_strlen(const char *s)
 {
-	if (v >= 10)
+	size_t		i;
+
+	i = 0;
+	while (*s)
 	{
-		ft_printnum(v / 10);
-		ft_printnum(v % 10);
+		i++;
+		s++;
 	}
-	else
-	{
-		v += '0';
-		write(STDOUT_FILENO, &v, 1);
-	}
+	return (i);
+}
+
+void 			ft_printstr(const char *s)
+{
+	write(1, s, ft_strlen(s));
 }

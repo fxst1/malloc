@@ -1,4 +1,4 @@
-#include "./inc/ftmalloc.h"
+#include <ftmalloc.h>
 #include <string.h>
 
 int		main(void)
@@ -18,6 +18,8 @@ int		main(void)
 	s4[0] = 0;
 	strcat(s4, "sffiodsjfiodjsfoijdsgoidfjgiojdfgoijfdgiojfdgoijfdiogjfdgiojfdgiojfdiogjfdiogjfdgoijfdgiojfdgiojfdgiojfdgiofdjgiodjfgiojfdgiofdjgiodsfpsdkfpskgpfdkgpodfkgopdfkgopdkfopgkdfopgkdfopgkopdfgkopdfkgopfdkg");
 
-	show_alloc_mem_ex();
+	show_alloc_mem();
 	return (0);
+	(void)s1;
+	(void)s3;
 }

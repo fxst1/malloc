@@ -3,87 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 14:51:24 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/27 19:04:22 by fjacquem         ###   ########.fr       */
+/*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/05 10:40:40 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
-#include <unistd.h>
 
-void				*malloc(size_t size)
+void 		*malloc(size_t size)
 {
-	void			*ret;
-	t_mcfg			*dat;
+	t_mcfg		*cfg;
+	intptr_t	addr;
+	size_t		typesize;
 
-	write(1, "Malloc\n", 7);
-	if (!size /*|| size > SIZE_T_MAX - sizeof(t_area) - sizeof(t_blk)*/)
+	addr = 0x0;
+	cfg = mem_get_data();
+	typesize = mem_get_typesize(size);
+	mem_lock(cfg);
+	if (mem_is_overlap(cfg))
 		return (NULL);
-	dat = mem_get_data();
-	mem_lock(dat);
-	ret = mem_get_free_space(dat, size, mem_get_blksize(size));
-	if (dat->malloc_hook)
-		dat->malloc_hook(size, (const void*(*))malloc);
-	mem_unlock(dat);
-	//show_alloc();
-	return (ret);
-}
-
-void				*calloc(size_t nmenb, size_t size)
-{
-	write(1, "Calloc\n", 7);
-	return (malloc(nmenb * size));
-}
-
-void				free(void *addr)
-{
-	t_mcfg			*dat;
-
-	if (addr)
+	else if (size > 0 && !mem_size_overflow(cfg->psize, typesize))
 	{
-		dat = mem_get_data();
-		mem_lock(dat);
-		mem_clear_space(dat, addr);
-		mem_areas_clear(&dat->areas);
-		mem_unlock(dat);
+//		ft_printstr("Malloc : ");
+//		ft_printnum(size);
+//		ft_printstr("\n");
+		addr = mem_search_space(cfg, size, typesize);
+		if (!addr)
+			addr = mem_new(cfg, size, typesize);
 	}
-}
-
-int					mallopt(int param, int value)
-{
-	t_mcfg			*dat;
-
-	dat = mem_get_data();
-	mem_lock(dat);
-	if (param == M_ARENA_MAX && value >= 0)
-		dat->arenamax = value;
-	else
-	{
-		mem_unlock(dat);
-		return (0);
-	}
-	mem_unlock(dat);
-	return (1);
-}
-
-void				*malloc_spec(size_t size, t_alloc_opts *opts)
-{
-	void			*ret;
-	t_mcfg			*dat;
-	t_alloc_opts	backopts;
-
-	if (!opts)
-		return (malloc(size));
-	dat = mem_get_data();
-	mem_lock(dat);
-	backopts = dat->opts;
-	dat->opts = *opts;
-	ret = mem_get_free_space(dat, size, mem_get_blksize(size));
-	if (dat->malloc_hook)
-		dat->malloc_hook(size, (const void*(*))malloc);
-	dat->opts = backopts;
-	mem_unlock(dat);
-	return (ret);
+	else if (size)
+		write(2, "Error: Overflow\n", 16);
+	mem_unlock(cfg);
+	return ((void*)addr);
 }

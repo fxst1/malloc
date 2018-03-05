@@ -1,39 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memmutex.c                                         :+:      :+:    :+:   */
+/*   mem_get_total.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/24 13:58:12 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/02/24 17:53:04 by fjacquem         ###   ########.fr       */
+/*   Created: 2018/03/04 21:27:52 by fxst1             #+#    #+#             */
+/*   Updated: 2018/03/04 21:35:01 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-#ifndef NO_MT_SAFE
-
-void		mem_lock(t_mcfg *dat)
+size_t			mem_get_total(size_t value, size_t add)
 {
-	(void)dat;
+	static size_t	total = 0;
+
+	if (!add)
+		total -= value;
+	else
+		total += value;
+	return (total);
 }
-
-void		mem_unlock(t_mcfg *dat)
-{
-	(void)dat;
-}
-
-#else
-
-void		mem_lock(t_mcfg *dat)
-{
-	pthread_mutex_lock(&dat->lock);
-}
-
-void		mem_unlock(t_mcfg *dat)
-{
-	pthread_mutex_unlock(&dat->lock);
-}
-
-#endif
