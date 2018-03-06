@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 17:22:44 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 17:25:00 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void 		*malloc(size_t size)
 	}
 	else if (size)
 		write(2, "Error: Overflow\n", 16);
+	else
+		write(2, "Error: Zero size\n", 17);
 	mem_unlock(cfg);
 	if (!addr)
 	{
