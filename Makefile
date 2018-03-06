@@ -17,13 +17,12 @@ OBJ = $(addprefix $(OBJDIR), $(SRC:.c=.o))
 all: $(NAME)
 
 $(NAME): $(OBJ) launcher
-	@$(CC) $(FLAGS) -fPIC $(MACRO) $(INCLUDE) $(OBJ) -shared -o $(NAME) $(LINK)
+	@$(CC) $(FLAGS) $(MACRO) $(INCLUDE) $(OBJ) -shared -o $(NAME) $(LINK)
 	@ln -s $(NAME) libft_malloc.so
-	@ranlib $(NAME)
 
 $(OBJDIR)%.o: %.c
 	@mkdir -p $(@D)
-	@$(CC) $(FLAGS) -fPIC $(MACRO) $(INCLUDE) -o $@ -c $<
+	$(CC) $(FLAGS) -fPIC $(MACRO) $(INCLUDE) -o $@ -c $<
 
 clean:
 	@rm -rf $(OBJDIR) $(OBJDIRLIB) test_*
@@ -48,9 +47,9 @@ launcher:
 	@chmod +x debugger.sh
 
 bin:
-	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/marco.c -o overlap -L . $(NAME)
-	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_thread.c -o test_thread -L . $(NAME) -lpthread
-	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_error.c -o test_error -L . $(NAME)
-	$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_many.c -o test_many -L . $(NAME)
+	@$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/marco.c -o test_overlap -L . $(NAME)
+	@$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_thread.c -o test_thread -L . $(NAME) -lpthread
+	@$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_error.c -o test_error -L . $(NAME)
+	@$(CC) $(FLAGS) $(MACRO) $(INCLUDE) test/test_many.c -o test_many -L . $(NAME)
 
 re: fclean all
