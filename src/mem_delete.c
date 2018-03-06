@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:21:53 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 09:47:41 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 10:42:10 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int			may_clear_blk(t_blk *b)
 	return (1);
 }
 
-void				mem_delete(t_mcfg *cfg, t_area **dat)
+void				ft_mem_delete(t_mcfg *cfg, t_area **dat)
 {
 	t_area			*a;
 	t_area			*last_a;
@@ -41,7 +41,7 @@ void				mem_delete(t_mcfg *cfg, t_area **dat)
 			tmp = a->next;
 			if ((void*)cfg->expected > (void*)a)
 				cfg->expected = (intptr_t)a;
-			//ft_printshl("Unmapping : ", (intptr_t)a);
+			ft_printshl("Unmapping : ", (intptr_t)a);
 			munmap((void*)a, a->total_size);
 			if (last_a)
 				last_a->next = tmp;

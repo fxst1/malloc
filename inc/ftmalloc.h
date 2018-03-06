@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/06 09:55:32 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 10:42:49 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ size_t					mem_get_total(size_t value, size_t add);
 /*
 **	Management
 */
-intptr_t				mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize);
-void					mem_delete(t_mcfg *cfg, t_area **root);
+intptr_t				ft_mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize);
+void					ft_mem_delete(t_mcfg *cfg, t_area **root);
 int 					mem_is_overlap(t_mcfg *cfg);
 
 /*

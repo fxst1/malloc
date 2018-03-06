@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 09:35:34 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 10:42:39 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void 				free(void *addr)
 	if (!mem_is_overlap(cfg))
 	{
 		get_area_and_free_block(cfg->areas, (intptr_t)addr);
-		mem_delete(cfg, &cfg->areas);
+		ft_mem_delete(cfg, &cfg->areas);
 	}
 	mem_unlock(cfg);
 	//show_alloc_mem();

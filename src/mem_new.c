@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 11:39:27 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 09:54:34 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 10:41:59 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static size_t		get_aligned_offset(void **addr, size_t typesize)
 	return (typesize);
 }
 */
-intptr_t			mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize)
+intptr_t			ft_mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize)
 {
 	t_area			*a;
 	size_t			total_size;

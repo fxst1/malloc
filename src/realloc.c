@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:10:05 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 09:08:24 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 10:42:31 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void 			*realloc(void *addr, size_t size)
 	typesize = mem_get_typesize(size);
 	if (addr && (ptr = can_realloc_same(cfg->areas, (intptr_t)addr, size, typesize)))
 	{
-		mem_delete(cfg, &cfg->areas);
+		ft_mem_delete(cfg, &cfg->areas);
 		mem_unlock(cfg);
 		return (addr);
 	}
@@ -60,7 +60,7 @@ void 			*realloc(void *addr, size_t size)
 	{
 		ptr = mem_search_space(cfg, size, typesize);
 		if (!ptr)
-			ptr = mem_new(cfg, size, typesize);
+			ptr = ft_mem_new(cfg, size, typesize);
 	}
 	mem_unlock(cfg);
 	if (!ptr)
