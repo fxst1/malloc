@@ -1,3 +1,4 @@
+HOSTTYPE = TMP
 ifeq ($(HOSTTYPE),)
 	HOSTTYPE = $(shell uname -m)_$(shell uname -s)
 endif
@@ -18,6 +19,7 @@ all: $(NAME)
 $(NAME): $(OBJ) launcher
 	@$(CC) $(FLAGS) -fPIC $(MACRO) $(INCLUDE) $(OBJ) -shared -o $(NAME) $(LINK)
 	@ln -s $(NAME) libft_malloc.so
+	@ranlib $(NAME)
 
 $(OBJDIR)%.o: %.c
 	@mkdir -p $(@D)
