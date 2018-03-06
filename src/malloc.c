@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 16:42:50 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 17:22:44 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void 		*malloc(size_t size)
 	{
 		errno = ENOMEM;
 		ft_printstr("\tERROR\n");
+		show_alloc_mem();
 	}
 	else
 	{
