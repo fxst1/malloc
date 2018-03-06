@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/06 13:17:06 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 16:28:32 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 # include <unistd.h>
 # define SIZE_T_MAX					(size_t)-1
 # define FTMALLOC_DBG_MAXDIGIT		12
-# define FTMALLOC_TINY				4096
-# define FTMALLOC_SMALL				8192
-# define FTMALLOC_BIG				65536
-# define FTMALLOC_NBLOCKS			128
+# define FTMALLOC_TINY				1024
+# define FTMALLOC_SMALL				1024 * 1024
+//# define FTMALLOC_BIG				1024 * 1024 * 1024
+# define FTMALLOC_NBLOCKS			100
 
 typedef void			*(*memhook_t)(size_t, const void*(*));
 
@@ -77,10 +77,11 @@ void					ft_printdouble(double d, unsigned int precision);
 void					ft_printhex(intptr_t v);
 void					ft_printaddr(intptr_t v);
 void					ft_printnum(intptr_t v);
-void 					ft_printstr(const char *s);
-void 					ft_bzero(const void *ptr, size_t size);
-void 					ft_printshl(const char *s, intptr_t hex);
+void					ft_printstr(const char *s);
+void					ft_bzero(const void *ptr, size_t size);
+void					ft_printshl(const char *s, intptr_t hex);
 void					*ft_print_memory(const void *addr, size_t size);
+void					*ft_memcpy(void *dst, const void *src, size_t len);
 
 /*
 **	Memory structure

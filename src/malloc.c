@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 13:38:25 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 16:42:50 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void 		*malloc(size_t size)
 
 	counter++;
 //	ft_printstr("Malloc: ");
-	//ft_printnum(size);
+//	ft_printnum(size);
 //	ft_printstr("\n");
 	addr = 0x0;
 	cfg = mem_get_data();

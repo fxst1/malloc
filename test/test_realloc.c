@@ -22,7 +22,7 @@ void			*alloc(size_t len)
 {
 	void			*addr;
 
-	addr = realloc(0, len);
+	addr = malloc(len);
 	if (addr)
 		init_alloc(addr, len);
 	return (addr);

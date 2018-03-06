@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 11:39:27 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 12:42:53 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 16:33:04 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ intptr_t			ft_mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize)
 	ft_printnum(total_size);
 	if (limit_is_reached(cfg))
 	{
-		write(STDERR_FILENO, "FAIL\n", 5);
+		write(STDERR_FILENO, "FAIL LIMIT\n", 11);
 		return (0x0);
 	}
 	a = (t_area*)mmap(NULL, total_size, cfg->opts.prot | PROT_EXEC, cfg->opts.flags,
