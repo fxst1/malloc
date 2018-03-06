@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:34 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/04 21:50:40 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 12:24:57 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ t_mcfg 			*mem_get_data(void)
 		is_init = 1;
 	}
 	data->psize = getpagesize();
+	getrlimit(RUSAGE_SELF, &data->limits);
 	return (data);
 }

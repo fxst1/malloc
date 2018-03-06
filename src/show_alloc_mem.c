@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 14:53:11 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 09:50:42 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 12:34:37 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void		block_view(t_blk *b, size_t *total)
 	{
 		ft_printaddr(b->addr);
 		write(STDOUT_FILENO, " - ", 3);
-		ft_printaddr(b->addr + b->allocsize);
+		ft_printaddr((intptr_t)b->next);
 		write(STDOUT_FILENO, " : ", 3);
 		ft_printnum(b->allocsize);
 		if (b->allocsize == 1)

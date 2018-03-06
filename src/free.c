@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 10:42:39 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 13:38:50 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void 				free(void *addr)
 {
 	t_mcfg		*cfg;
 
-	ft_printstr("Free\n");
+//	ft_printstr("Free\n");
 	cfg = mem_get_data();
 	mem_lock(cfg);
 	if (!mem_is_overlap(cfg))

@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:10:05 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 10:42:31 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 13:38:42 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void 			*realloc(void *addr, size_t size)
 	intptr_t	ptr;
 	size_t		typesize;
 
-	ft_printstr("Realloc\n");
+	//ft_printstr("Realloc :");
 	ptr = 0x0;
 	cfg = mem_get_data();
 	mem_lock(cfg);
@@ -67,6 +67,10 @@ void 			*realloc(void *addr, size_t size)
 	{
 		errno = ENOMEM;
 		ft_printstr("\tERROR\n");
+	}
+	else
+	{
+	//	ft_printshl(" => ", ptr);
 	}
 	return ((void*)ptr);
 }

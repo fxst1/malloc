@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/06 10:42:49 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 13:17:06 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,6 @@
 # define FTMALLOC_SMALL				8192
 # define FTMALLOC_BIG				65536
 # define FTMALLOC_NBLOCKS			128
-# define FTMALLOC_FILEID			"FT"
-# define FTMALLOC_SHOW_WASTE		0x1
-# define FTMALLOC_SHOW_AREA			0x2
-# define FTMALLOC_SHOW_BLOCK		0x4
-# define FTMALLOC_SHOW_CONTENT		0x8
-# define FTMALLOC_SHOW_FREE			0x40
-# define FTMALLOC_SHOW_RES_HARDPAGE	0x10
-# define FTMALLOC_SHOW_RES_SOFTPAGE	0x20
-# define FTMALLOC_SHOW_RES			0x30
-# define FTMALLOC_SHOW_DATA			0xE
-# define FTMALLOC_SHOW_ALL			0x3F
-# define FTMALLOC_SHOW_ALL_FREE		0x7F
-# define FTMALLOC_SHOW_RES_SELF		RUSAGE_SELF
-# define FTMALLOC_SHOW_RES_CHILDREN	RUSAGE_CHILDREN
-# define FTMALLOC_SHOW_RES_THREAD	RUSAGE_THREAD
-# ifndef M_ARENA_MAX
-#  define M_ARENA_MAX 1
-# endif
 
 typedef void			*(*memhook_t)(size_t, const void*(*));
 
@@ -81,6 +63,8 @@ typedef struct			s_mcfg
 	t_alloc_opts		opts;
 	t_area				*areas;
 	size_t				psize;
+	size_t				total;
+	struct rlimit		limits;
 	pthread_mutex_t		lock;
 }						t_mcfg;
 
@@ -96,6 +80,7 @@ void					ft_printnum(intptr_t v);
 void 					ft_printstr(const char *s);
 void 					ft_bzero(const void *ptr, size_t size);
 void 					ft_printshl(const char *s, intptr_t hex);
+void					*ft_print_memory(const void *addr, size_t size);
 
 /*
 **	Memory structure

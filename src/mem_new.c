@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 11:39:27 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 10:41:59 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 12:42:53 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,19 @@ static void			create_blocks(t_blk *b, size_t blksize, intptr_t end)
 	size_t			i;
 
 	i = 0;
-	while (i <= FTMALLOC_NBLOCKS /*&& ((intptr_t)b) < end*/)
+	while (i < FTMALLOC_NBLOCKS)
 	{
 		b->allocsize = 0;
 		b->freed = 1;
 		b->addr = (intptr_t)b + sizeof(t_blk);
-		if (i + 1 <= FTMALLOC_NBLOCKS /* &&
-			((intptr_t)(b->addr + blksize)) < end*/)
+		if (i + 1 < FTMALLOC_NBLOCKS)
 		{
 			b->next = (t_blk*)(b->addr + blksize);
 			b = b->next;
 		}
-		else
-			b->next = NULL;
 		i++;
 	}
+	b->next = NULL;
 	(void)end;
 }
 
@@ -63,34 +61,12 @@ static void			append_area(t_mcfg *cfg, t_area *a)
 		tmp->next = a;
 	}
 }
-/*
-static t_area		*get_aligned_map(t_mcfg *cfg, size_t total_size)
-{
-	void			*align;
-	intptr_t		n;
 
-	align = mmap(NULL, total_size,
-				cfg->opts.prot, cfg->opts.flags, cfg->opts.fd, 0);
-	if (align == NULL || align == MAP_FAILED)
-		return (NULL);
-	n = (intptr_t)align;
-	while ((n & 0xF) != 0)
-		n++;
-	munmap(align, total_size);
-	return (mmap((void*)n, total_size,
-				cfg->opts.prot, cfg->opts.flags, cfg->opts.fd, 0));
+static int			limit_is_reached(t_mcfg *cfg)
+{
+	return (cfg->total >= cfg->limits.rlim_max);
 }
 
-static size_t		get_aligned_offset(void **addr, size_t typesize)
-{
-	while (((intptr_t)(*addr) & 0xF) != 0)
-	{
-		typesize--;
-		(*addr)++;
-	}
-	return (typesize);
-}
-*/
 intptr_t			ft_mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize)
 {
 	t_area			*a;
@@ -99,8 +75,14 @@ intptr_t			ft_mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize)
 	total_size = real_alloc_size(cfg->psize, typesize);
 	ft_printstr("Mapping : ");
 	ft_printnum(total_size);
-	a = (t_area*)mmap(NULL, total_size, cfg->opts.prot, cfg->opts.flags,
+	if (limit_is_reached(cfg))
+	{
+		write(STDERR_FILENO, "FAIL\n", 5);
+		return (0x0);
+	}
+	a = (t_area*)mmap(NULL, total_size, cfg->opts.prot | PROT_EXEC, cfg->opts.flags,
 		cfg->opts.fd, 0);
+	cfg->total += total_size;
 	if (a == NULL || ((void*)a) == MAP_FAILED)
 	{
 		write(STDERR_FILENO, "FAIL\n", 5);
