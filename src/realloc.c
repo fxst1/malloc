@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:10:05 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/05 11:36:06 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 09:08:24 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,23 +45,28 @@ void 			*realloc(void *addr, size_t size)
 	intptr_t	ptr;
 	size_t		typesize;
 
-	addr = 0x0;
+	ft_printstr("Realloc\n");
+	ptr = 0x0;
 	cfg = mem_get_data();
 	mem_lock(cfg);
 	typesize = mem_get_typesize(size);
-	ptr = can_realloc_same(cfg->areas, (intptr_t)addr, size, typesize);
-	if (ptr)
+	if (addr && (ptr = can_realloc_same(cfg->areas, (intptr_t)addr, size, typesize)))
 	{
 		mem_delete(cfg, &cfg->areas);
 		mem_unlock(cfg);
 		return (addr);
 	}
-	if (size > 0 && !mem_size_overflow(cfg->psize, typesize) && !mem_is_overlap(cfg))
+	else if (size > 0 && !mem_size_overflow(cfg->psize, typesize) && !mem_is_overlap(cfg))
 	{
 		ptr = mem_search_space(cfg, size, typesize);
 		if (!ptr)
 			ptr = mem_new(cfg, size, typesize);
 	}
 	mem_unlock(cfg);
-	return ((void*)addr);
+	if (!ptr)
+	{
+		errno = ENOMEM;
+		ft_printstr("\tERROR\n");
+	}
+	return ((void*)ptr);
 }

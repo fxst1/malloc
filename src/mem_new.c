@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 11:39:27 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/05 11:36:22 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 09:54:34 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,22 @@ static void			create_blocks(t_blk *b, size_t blksize, intptr_t end)
 	size_t			i;
 
 	i = 0;
-	while (i <= FTMALLOC_NBLOCKS && ((intptr_t)b) < end)
+	while (i <= FTMALLOC_NBLOCKS /*&& ((intptr_t)b) < end*/)
 	{
 		b->allocsize = 0;
 		b->freed = 1;
 		b->addr = (intptr_t)b + sizeof(t_blk);
-		if (i + 1 <= FTMALLOC_NBLOCKS &&
-			((intptr_t)(b->addr + blksize)) < end)
+		if (i + 1 <= FTMALLOC_NBLOCKS /* &&
+			((intptr_t)(b->addr + blksize)) < end*/)
 		{
 			b->next = (t_blk*)(b->addr + blksize);
 			b = b->next;
-			i++;
 		}
-		b->next = NULL;
-		break ;
+		else
+			b->next = NULL;
+		i++;
 	}
+	(void)end;
 }
 
 static size_t		real_alloc_size(size_t psize, size_t typesize)
@@ -52,35 +53,44 @@ static void			append_area(t_mcfg *cfg, t_area *a)
 	if (tmp == NULL)
 	{
 		cfg->areas = a;
-		a->prev = NULL;
+	//	a->prev = NULL;
 	}
 	else
 	{
 		while (tmp->next)
 			tmp = tmp->next;
-		a->prev = tmp;
+		//a->prev = tmp;
 		tmp->next = a;
 	}
 }
 /*
 static t_area		*get_aligned_map(t_mcfg *cfg, size_t total_size)
 {
-	t_area			*a;
-	t_area			*align;
+	void			*align;
 	intptr_t		n;
 
-	a = (t_area*)mmap(NULL, 2 * total_size, cfg->opts.prot, cfg->opts.flags, cfg->opts.fd, 0);
-	if (a == NULL || a == MAP_FAILED)
+	align = mmap(NULL, total_size,
+				cfg->opts.prot, cfg->opts.flags, cfg->opts.fd, 0);
+	if (align == NULL || align == MAP_FAILED)
 		return (NULL);
-	align = a;
-	n = (intptr_t)a;
-	align = (t_area*)((((n) + (total_size) - 1) / (total_size)) * (total_size));
-	if (align != a)
-		munmap(a, align - a);
-	munmap(a + total_size, total_size - (align - a));
-	return (mmap(align, total_size, cfg->opts.prot, cfg->opts.flags | MAP_FIXED, cfg->opts.fd, 0));
-}*/
+	n = (intptr_t)align;
+	while ((n & 0xF) != 0)
+		n++;
+	munmap(align, total_size);
+	return (mmap((void*)n, total_size,
+				cfg->opts.prot, cfg->opts.flags, cfg->opts.fd, 0));
+}
 
+static size_t		get_aligned_offset(void **addr, size_t typesize)
+{
+	while (((intptr_t)(*addr) & 0xF) != 0)
+	{
+		typesize--;
+		(*addr)++;
+	}
+	return (typesize);
+}
+*/
 intptr_t			mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize)
 {
 	t_area			*a;
@@ -89,23 +99,22 @@ intptr_t			mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize)
 	total_size = real_alloc_size(cfg->psize, typesize);
 	ft_printstr("Mapping : ");
 	ft_printnum(total_size);
-	ft_printstr("\n");
-	a = (t_area*)mmap((void*)cfg->expected, total_size, cfg->opts.prot, cfg->opts.flags,
+	a = (t_area*)mmap(NULL, total_size, cfg->opts.prot, cfg->opts.flags,
 		cfg->opts.fd, 0);
-	//a = get_aligned_map(cfg, total_size);
 	if (a == NULL || ((void*)a) == MAP_FAILED)
 	{
 		write(STDERR_FILENO, "FAIL\n", 5);
 		return (0x0);
 	}
+	ft_printshl(" => ", (intptr_t)a);
+	a->blocks = (t_blk*)((intptr_t)a + sizeof(t_area));
 	a->total_size = total_size;
 	a->blksize = typesize;
 	a->next = NULL;
-	a->blocks = (t_blk*)((intptr_t)a + sizeof(t_area));
 	append_area(cfg, a);
 	create_blocks(a->blocks, typesize, (intptr_t)(a + total_size));
-	mem_get_total(typesize, 1);
 	a->blocks->allocsize = allocsize;
 	a->blocks->freed = 0;
+//	ft_printshl(" => ", (intptr_t)a->blocks);
 	return (a->blocks->addr);
 }

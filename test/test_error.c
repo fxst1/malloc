@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 13:58:12 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/05 08:04:33 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 08:43:17 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void			malloc_test(size_t len)
 		printf("\t=> %p\n", ret);
 	else
 		printf("\t=> (nil)\n");
-//	show_alloc_mem();
+	show_alloc_mem();
 	printf("\n");
 	free(ret);
 }
@@ -57,24 +57,28 @@ int					main(void)
 	malloc_test(1);
 	malloc_test(42);
 	malloc_test(1024);
-	malloc_test(max);
-	malloc_test((size_t)UINT_MAX);
-	malloc_test((size_t)INT_MAX * 42);
+//	malloc_test(max);
+//	malloc_test((size_t)UINT_MAX);
+//	malloc_test((size_t)INT_MAX * 42);
 	printf("\nREALLOC :\n");
-	realloc_test(NULL, max);
-	realloc_test(NULL, (size_t)0);
-	realloc_test(NULL, INT_MAX);
-	realloc_test(NULL, UINT_MAX);
-	realloc_test(malloc((size_t)0), max);
-	realloc_test(malloc((size_t)0), (size_t)0);
-	realloc_test(malloc(max), max);
-	realloc_test(malloc(max), (size_t)0);
-	realloc_test(malloc(UINT_MAX), INT_MAX);
-	realloc_test(malloc(INT_MAX), UINT_MAX);
-	realloc_test((void*)0xDeadBeef, max);
-	realloc_test((void*)0xDeadBeef, (size_t)0);
+	realloc_test(NULL, 1);
+	realloc_test(NULL, 42);
+	realloc_test(NULL, 1024);
+//	realloc_test(NULL, max);
+//	realloc_test(NULL, (size_t)0);
+//	realloc_test(NULL, INT_MAX);
+//	realloc_test(NULL, UINT_MAX);
+//	realloc_test(malloc((size_t)0), max);
+//	realloc_test(malloc((size_t)0), (size_t)0);
+//	realloc_test(malloc(max), max);
+//	realloc_test(malloc(max), (size_t)0);
+//	realloc_test(malloc(UINT_MAX), INT_MAX);
+//	realloc_test(malloc(INT_MAX), UINT_MAX);
+//	realloc_test((void*)0xDeadBeef, max);
+//	realloc_test((void*)0xDeadBeef, (size_t)0);
 	printf("\nFREE :\n");
 	free_test(NULL);
 	free_test((void*)0xDeadBeef);
 	return (0);
+	(void)max;
 }

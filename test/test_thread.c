@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/27 16:57:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/04 19:51:32 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 08:48:51 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,20 @@
 
 static void				printinfo(t_thread_test *t, const char *buf)
 {
-	write(STDOUT_FILENO, "=", 1);
+	pthread_mutex_lock(&g_printmutex);
+	write(STDOUT_FILENO, "= ", 2);
 	write(STDOUT_FILENO, buf, strlen(buf));
 	write(STDOUT_FILENO, " ", 1);
 	ft_printnum(t->num);
 	write(STDOUT_FILENO, " : ", 3);
-	write(STDOUT_FILENO, t->argv, strlen(t->argv));
+	if (t->argv)
+		ft_printstr(t->argv);
+	else
+		ft_printstr("(nil)");
 	write(STDOUT_FILENO, " : iteration ", 13);
 	ft_printnum(t->iter);
 	write(STDOUT_FILENO, "\n", 1);
+	pthread_mutex_unlock(&g_printmutex);
 }
 
 static void				*dothread(void *buffer)
@@ -30,19 +35,21 @@ static void				*dothread(void *buffer)
 	t_thread_test		*info;
 	char				*s;
 
-	pthread_mutex_lock(&g_printmutex);
 	info = (t_thread_test*)buffer;
-	info->iter++;
-	info->argv = realloc(info->argv, strlen(info->argv));
-	s = info->argv;
-	while (*s)
+	while (info->iter < 100)
 	{
-		*s = toupper(*s);
-		s++;
+		info->iter++;
+		info->argv = realloc(info->argv, strlen(info->argv));
+		s = info->argv;
+		if (s)
+			while (*s)
+			{
+				*s = toupper(*s);
+				s++;
+			}
+		printinfo(info, "Into thread (realloc string)");		
 	}
-	printinfo(info, "Into thread (realloc string)");
-	show_alloc_mem();
-	pthread_mutex_unlock(&g_printmutex);
+	//show_alloc_mem();
 	return (buffer);
 }
 

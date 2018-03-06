@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/05 11:57:41 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 09:55:32 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 # include <unistd.h>
 # define SIZE_T_MAX					(size_t)-1
 # define FTMALLOC_DBG_MAXDIGIT		12
-# define FTMALLOC_TINY				1024
-# define FTMALLOC_SMALL				4096
-# define FTMALLOC_BIG				16384
-# define FTMALLOC_NBLOCKS			100
+# define FTMALLOC_TINY				4096
+# define FTMALLOC_SMALL				8192
+# define FTMALLOC_BIG				65536
+# define FTMALLOC_NBLOCKS			128
 # define FTMALLOC_FILEID			"FT"
 # define FTMALLOC_SHOW_WASTE		0x1
 # define FTMALLOC_SHOW_AREA			0x2
@@ -55,7 +55,7 @@ typedef struct			s_blk
 {
 	intptr_t			addr;
 	size_t				allocsize;
-	int					freed;
+	int					freed:5;
 	struct s_blk		*next;
 }						t_blk;
 
@@ -64,7 +64,6 @@ typedef struct			s_area
 	size_t				total_size;
 	size_t				blksize;
 	t_blk				*blocks;
-	struct s_area		*prev;
 	struct s_area		*next;
 }						t_area;
 
@@ -135,5 +134,6 @@ void 					show_alloc_mem(void);
 void					*malloc(size_t size);
 void					*realloc(void *addr, size_t size);
 void					free(void *addr);
+void 					*calloc(size_t nmemb, size_t size);
 
 #endif

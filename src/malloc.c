@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/05 10:40:40 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 09:08:20 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ void 		*malloc(size_t size)
 	intptr_t	addr;
 	size_t		typesize;
 
+	ft_printstr("Malloc\n");
+	ft_printnum(size);
+	ft_printstr("\n");
 	addr = 0x0;
 	cfg = mem_get_data();
 	typesize = mem_get_typesize(size);
@@ -29,6 +32,7 @@ void 		*malloc(size_t size)
 //		ft_printstr("Malloc : ");
 //		ft_printnum(size);
 //		ft_printstr("\n");
+		mem_delete(cfg, &cfg->areas);
 		addr = mem_search_space(cfg, size, typesize);
 		if (!addr)
 			addr = mem_new(cfg, size, typesize);
@@ -36,5 +40,10 @@ void 		*malloc(size_t size)
 	else if (size)
 		write(2, "Error: Overflow\n", 16);
 	mem_unlock(cfg);
+	if (!addr)
+	{
+		errno = ENOMEM;
+		ft_printstr("\tERROR\n");
+	}
 	return ((void*)addr);
 }
