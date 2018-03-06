@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 10:38:59 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 10:39:45 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/06 11:09:23 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 
 void 			*reallocarray(void *ptr, size_t nmemb, size_t size)
 {
+	ft_printstr("ReallocArray\n");
 	return (realloc(ptr, nmemb * size));
 }
