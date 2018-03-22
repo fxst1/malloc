@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 11:30:10 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/22 08:32:12 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/22 14:59:52 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_blk		*research_into_mem(t_area *a)
 	t_blk	*b;
 	size_t	i;
 
+	i = 0;
 	b = a->blocks;
 	while (i < FTMALLOC_NBLOCKS)
 	{
