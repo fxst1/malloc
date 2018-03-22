@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:10:05 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 16:15:45 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/22 08:33:34 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,23 @@
 static t_blk	*get_block(t_area *a, intptr_t addr, size_t *sizes, size_t size)
 {
 	t_blk		*b;
+	size_t		i;
 
 	sizes[0] = 0;
 	sizes[1] = size;
 	while (a)
 	{
 		b = a->blocks;
-		while (b)
+		i = 0;
+		while (i < FTMALLOC_NBLOCKS)
 		{
 			if (b->addr == addr)
 			{
 				sizes[0] = a->blksize;
 				return (b);
 			}
-			b = b->next;
+			b = (t_blk*)(((intptr_t)b) + sizeof(t_blk) + a->blksize);
+			i++;
 		}
 		a = a->next;
 	}
@@ -42,7 +45,6 @@ static intptr_t	realloc_block(t_mcfg *cfg, t_blk *b, size_t *sizes, size_t types
 	intptr_t	swap;
 
 	b->freed = 1;
-	b->allocsize = 0;
 	swap = b->addr;
 	min = (sizes[0] < typesize) ? sizes[0] : typesize;
 	ret = mem_search_space(cfg, sizes[1], typesize);

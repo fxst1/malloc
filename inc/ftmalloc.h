@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/06 16:28:32 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/22 09:25:32 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,16 @@
 # include <sys/resource.h>
 # include <errno.h>
 # include <stddef.h>
+# include <stdlib.h>
+# include <stdint.h>
 # include <pthread.h>
 # include <unistd.h>
+# define FTMALLOC_MAGIC				"ALOCALOCALOCALOC"
 # define SIZE_T_MAX					(size_t)-1
 # define FTMALLOC_DBG_MAXDIGIT		12
 # define FTMALLOC_TINY				1024
 # define FTMALLOC_SMALL				1024 * 1024
-//# define FTMALLOC_BIG				1024 * 1024 * 1024
-# define FTMALLOC_NBLOCKS			100
+# define FTMALLOC_NBLOCKS			256
 
 typedef void			*(*memhook_t)(size_t, const void*(*));
 
@@ -36,17 +38,16 @@ extern 					memhook_t g_free_hook;
 typedef struct			s_blk
 {
 	intptr_t			addr;
-	size_t				allocsize;
-	int					freed:5;
-	struct s_blk		*next;
+	size_t				freed;
 }						t_blk;
 
 typedef struct			s_area
 {
+	char				magic[16];
 	size_t				total_size;
 	size_t				blksize;
-	t_blk				*blocks;
 	struct s_area		*next;
+	t_blk				*blocks;
 }						t_area;
 
 typedef struct			s_alloc_opts
@@ -82,6 +83,7 @@ void					ft_bzero(const void *ptr, size_t size);
 void					ft_printshl(const char *s, intptr_t hex);
 void					*ft_print_memory(const void *addr, size_t size);
 void					*ft_memcpy(void *dst, const void *src, size_t len);
+int						ft_memcmp(const void *s1, const void *s2, size_t n);
 
 /*
 **	Memory structure

@@ -6,22 +6,23 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:21:53 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 12:21:14 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/03/22 08:35:07 by fxst1            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-static int			may_clear_blk(t_blk *b)
+static int			may_clear_blk(t_blk *b, size_t blksize)
 {
-	while (b)
+	size_t			i;
+
+	i = 0;
+	while (i < FTMALLOC_NBLOCKS)
 	{
-		if (b->allocsize > 0)
-		{
-		//	ft_printshl("Unclear block: ", (intptr_t)b);
+		if (b->freed)
 			return (0);
-		}
-		b = b->next;
+		b = (t_blk*)(((intptr_t)b) + sizeof(t_blk) + blksize);
+		i++;
 	}
 	return (1);
 }
@@ -36,7 +37,7 @@ void				ft_mem_delete(t_mcfg *cfg, t_area **dat)
 	last_a = NULL;
 	while (a)
 	{
-		if (may_clear_blk(a->blocks))
+		if (may_clear_blk(a->blocks, a->blksize))
 		{
 			tmp = a->next;
 			if ((void*)cfg->expected > (void*)a)
