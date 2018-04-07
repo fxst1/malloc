@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/22 09:25:32 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 18:40:57 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,39 +15,33 @@
 # include <sys/mman.h>
 # include <sys/time.h>
 # include <sys/resource.h>
-# include <errno.h>
 # include <stddef.h>
-# include <stdlib.h>
-# include <stdint.h>
 # include <pthread.h>
 # include <unistd.h>
-# define FTMALLOC_MAGIC				"ALOCALOCALOCALOC"
 # define SIZE_T_MAX					(size_t)-1
 # define FTMALLOC_DBG_MAXDIGIT		12
 # define FTMALLOC_TINY				1024
 # define FTMALLOC_SMALL				1024 * 1024
-# define FTMALLOC_NBLOCKS			256
+# define FTMALLOC_NBLOCKS			100
 
-typedef void			*(*memhook_t)(size_t, const void*(*));
-
-extern					int			errno;
-extern 					memhook_t g_malloc_hook;
-extern 					memhook_t g_realloc_hook;
-extern 					memhook_t g_free_hook;
+extern void *(*g_malloc_hook)(size_t, const void*(*));
+extern void *(*g_realloc_hook)(size_t, const void*(*));
+extern void *(*g_free_hook)(size_t, const void*(*));
 
 typedef struct			s_blk
 {
 	intptr_t			addr;
-	size_t				freed;
+	size_t				allocsize;
+	int					freed:5;
+	struct s_blk		*next;
 }						t_blk;
 
 typedef struct			s_area
 {
-	char				magic[16];
 	size_t				total_size;
 	size_t				blksize;
-	struct s_area		*next;
 	t_blk				*blocks;
+	struct s_area		*next;
 }						t_area;
 
 typedef struct			s_alloc_opts
@@ -83,12 +77,11 @@ void					ft_bzero(const void *ptr, size_t size);
 void					ft_printshl(const char *s, intptr_t hex);
 void					*ft_print_memory(const void *addr, size_t size);
 void					*ft_memcpy(void *dst, const void *src, size_t len);
-int						ft_memcmp(const void *s1, const void *s2, size_t n);
 
 /*
 **	Memory structure
 */
-t_mcfg 					*mem_get_data(void);
+t_mcfg					*mem_get_data(void);
 void					mem_lock(t_mcfg *dat);
 void					mem_unlock(t_mcfg *dat);
 
@@ -102,19 +95,21 @@ size_t					mem_get_total(size_t value, size_t add);
 /*
 **	Management
 */
-intptr_t				ft_mem_new(t_mcfg *cfg, size_t allocsize, size_t typesize);
+intptr_t				ft_mem_new(t_mcfg *cfg, size_t allocsize,
+							size_t typesize);
 void					ft_mem_delete(t_mcfg *cfg, t_area **root);
-int 					mem_is_overlap(t_mcfg *cfg);
+int						mem_is_overlap(t_mcfg *cfg);
 
 /*
 **	Search
 */
-intptr_t 				mem_search_space(t_mcfg *dat, size_t allocsize, size_t typesize);
+intptr_t				mem_search_space(t_mcfg *dat, size_t allocsize,
+							size_t typesize);
 
 /*
 **	Show
 */
-void 					show_alloc_mem(void);
+void					show_alloc_mem(void);
 
 /*
 **	Main functions
@@ -122,6 +117,5 @@ void 					show_alloc_mem(void);
 void					*malloc(size_t size);
 void					*realloc(void *addr, size_t size);
 void					free(void *addr);
-void 					*calloc(size_t nmemb, size_t size);
 
 #endif

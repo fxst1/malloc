@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:10:05 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/22 08:33:34 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 17:53:36 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,36 +15,35 @@
 static t_blk	*get_block(t_area *a, intptr_t addr, size_t *sizes, size_t size)
 {
 	t_blk		*b;
-	size_t		i;
 
 	sizes[0] = 0;
 	sizes[1] = size;
 	while (a)
 	{
 		b = a->blocks;
-		i = 0;
-		while (i < FTMALLOC_NBLOCKS)
+		while (b)
 		{
 			if (b->addr == addr)
 			{
 				sizes[0] = a->blksize;
 				return (b);
 			}
-			b = (t_blk*)(((intptr_t)b) + sizeof(t_blk) + a->blksize);
-			i++;
+			b = b->next;
 		}
 		a = a->next;
 	}
 	return (NULL);
 }
 
-static intptr_t	realloc_block(t_mcfg *cfg, t_blk *b, size_t *sizes, size_t typesize)
+static intptr_t	realloc_block(t_mcfg *cfg, t_blk *b, size_t *sizes,
+				size_t typesize)
 {
 	size_t		min;
 	intptr_t	ret;
 	intptr_t	swap;
 
 	b->freed = 1;
+	b->allocsize = 0;
 	swap = b->addr;
 	min = (sizes[0] < typesize) ? sizes[0] : typesize;
 	ret = mem_search_space(cfg, sizes[1], typesize);
@@ -55,7 +54,7 @@ static intptr_t	realloc_block(t_mcfg *cfg, t_blk *b, size_t *sizes, size_t types
 	return (ret);
 }
 
-void 			*realloc(void *addr, size_t size)
+void			*realloc(void *addr, size_t size)
 {
 	t_mcfg		*cfg;
 	intptr_t	ret;

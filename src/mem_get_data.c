@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:34 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 12:24:57 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 17:47:38 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_mcfg	*get_data(void)
 	return (&cfg);
 }
 
-t_mcfg 			*mem_get_data(void)
+t_mcfg			*mem_get_data(void)
 {
 	static int		is_init = 0;
 	t_mcfg			*data;

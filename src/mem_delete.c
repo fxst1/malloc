@@ -6,25 +6,31 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 13:21:53 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/22 08:35:07 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 17:59:32 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-static int			may_clear_blk(t_blk *b, size_t blksize)
+static int			may_clear_blk(t_blk *b)
 {
-	size_t			i;
-
-	i = 0;
-	while (i < FTMALLOC_NBLOCKS)
+	while (b)
 	{
-		if (b->freed)
+		if (b->allocsize > 0)
+		{
 			return (0);
-		b = (t_blk*)(((intptr_t)b) + sizeof(t_blk) + blksize);
-		i++;
+		}
+		b = b->next;
 	}
 	return (1);
+}
+
+static void			clear_area(t_mcfg *cfg, t_area *a)
+{
+	if ((void*)cfg->expected > (void*)a)
+		cfg->expected = (intptr_t)a;
+	cfg->total -= a->total_size;
+	munmap((void*)a, a->total_size);
 }
 
 void				ft_mem_delete(t_mcfg *cfg, t_area **dat)
@@ -37,14 +43,10 @@ void				ft_mem_delete(t_mcfg *cfg, t_area **dat)
 	last_a = NULL;
 	while (a)
 	{
-		if (may_clear_blk(a->blocks, a->blksize))
+		if (may_clear_blk(a->blocks))
 		{
 			tmp = a->next;
-			if ((void*)cfg->expected > (void*)a)
-				cfg->expected = (intptr_t)a;
-			ft_printshl("Unmapping : ", (intptr_t)a);
-			cfg->total -= a->total_size;
-			munmap((void*)a, a->total_size);
+			clear_area(cfg, a);
 			if (last_a)
 				last_a->next = tmp;
 			else

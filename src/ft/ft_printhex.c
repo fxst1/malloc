@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 18:01:04 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/03/05 11:05:28 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 18:04:26 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void		ft_printhex2(intptr_t v, size_t *n)
 
 static void		ft_printhex1(intptr_t v, int max, int show_x)
 {
-	size_t	n;
+	size_t		n;
 
 	n = 0;
 	if (!v)
@@ -52,7 +52,6 @@ static void		ft_printhex1(intptr_t v, int max, int show_x)
 			}
 	}
 }
-
 
 void			ft_printaddr(intptr_t v)
 {

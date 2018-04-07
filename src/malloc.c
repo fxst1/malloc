@@ -6,23 +6,18 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/06 17:25:00 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 18:39:10 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ftmalloc.h>
 
-void 		*malloc(size_t size)
+void			*malloc(size_t size)
 {
-	static int counter = 0;
 	t_mcfg		*cfg;
 	intptr_t	addr;
 	size_t		typesize;
 
-	counter++;
-//	ft_printstr("Malloc: ");
-//	ft_printnum(size);
-//	ft_printstr("\n");
 	addr = 0x0;
 	cfg = mem_get_data();
 	typesize = mem_get_typesize(size);
@@ -36,23 +31,6 @@ void 		*malloc(size_t size)
 		if (!addr)
 			addr = ft_mem_new(cfg, size, typesize);
 	}
-	else if (size)
-		write(2, "Error: Overflow\n", 16);
-	else
-		write(2, "Error: Zero size\n", 17);
 	mem_unlock(cfg);
-	if (!addr)
-	{
-		errno = ENOMEM;
-		ft_printstr("\tERROR\n");
-		show_alloc_mem();
-	}
-	else
-	{
-		//ft_printnum(counter);
-		//ft_printshl(" => ", addr);
-	}
-	//if (counter == 565)
-	//	show_alloc_mem();
 	return ((void*)addr);
 }

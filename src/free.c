@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 18:45:30 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/22 08:35:29 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 18:04:56 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,28 @@
 static void		get_area_and_free_block(t_area *a, intptr_t addr)
 {
 	t_blk		*b;
-	size_t		i;
 
 	while (a)
 	{
-		i = 0;
 		b = a->blocks;
-		while (i < FTMALLOC_NBLOCKS)
+		while (b)
 		{
 			if (b->addr == addr)
 			{
+				b->allocsize = 0;
 				b->freed = 1;
-				return;
+				return ;
 			}
-			b = (t_blk*)(((intptr_t)b) + sizeof(t_blk) + a->blksize);
-			i++;
+			b = b->next;
 		}
 		a = a->next;
 	}
 }
 
-void 				free(void *addr)
+void			free(void *addr)
 {
 	t_mcfg		*cfg;
 
-//	ft_printstr("Free\n");
 	cfg = mem_get_data();
 	mem_lock(cfg);
 	if (!mem_is_overlap(cfg))
@@ -48,5 +45,4 @@ void 				free(void *addr)
 		ft_mem_delete(cfg, &cfg->areas);
 	}
 	mem_unlock(cfg);
-	//show_alloc_mem();
 }

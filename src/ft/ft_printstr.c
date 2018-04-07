@@ -6,7 +6,7 @@
 /*   By: fxst1 <fxst1@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 17:03:06 by fxst1             #+#    #+#             */
-/*   Updated: 2018/03/04 17:04:38 by fxst1            ###   ########.fr       */
+/*   Updated: 2018/04/03 18:03:22 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-void 			ft_printstr(const char *s)
+void			ft_printstr(const char *s)
 {
 	write(1, s, ft_strlen(s));
 }
