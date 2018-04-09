@@ -6,7 +6,7 @@
 /*   By: fjacquem <fjacquem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/24 14:47:45 by fjacquem          #+#    #+#             */
-/*   Updated: 2018/04/03 18:40:57 by fjacquem         ###   ########.fr       */
+/*   Updated: 2018/04/09 15:40:57 by fjacquem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,10 @@
 # include <pthread.h>
 # include <unistd.h>
 # define SIZE_T_MAX					(size_t)-1
-# define FTMALLOC_DBG_MAXDIGIT		12
+# define FTMALLOC_DBG_MAXDIGIT		9
 # define FTMALLOC_TINY				1024
 # define FTMALLOC_SMALL				1024 * 1024
 # define FTMALLOC_NBLOCKS			100
-
-extern void *(*g_malloc_hook)(size_t, const void*(*));
-extern void *(*g_realloc_hook)(size_t, const void*(*));
-extern void *(*g_free_hook)(size_t, const void*(*));
 
 typedef struct			s_blk
 {
@@ -110,6 +106,7 @@ intptr_t				mem_search_space(t_mcfg *dat, size_t allocsize,
 **	Show
 */
 void					show_alloc_mem(void);
+void					show_alloc_dump(void);
 
 /*
 **	Main functions
